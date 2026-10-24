@@ -53,11 +53,13 @@ exports.sendTestEmail = async (req, res) => {
 
     let result;
 
+    const clientUrl = emailConfig.getClientUrl(req);
+
     switch (type) {
       case "verification":
         result = await sendVerificationEmail(
           recipient,
-          `${emailConfig.clientUrl}/verify-email?token=sample_test_token_12345`,
+          `${clientUrl}/verify-email?token=sample_test_token_12345`,
           "Test Cinephile"
         );
         break;
@@ -65,7 +67,7 @@ exports.sendTestEmail = async (req, res) => {
       case "password_reset":
         result = await sendPasswordResetEmail(
           recipient,
-          `${emailConfig.clientUrl}/reset-password?token=sample_reset_token_67890`,
+          `${clientUrl}/reset-password?token=sample_reset_token_67890`,
           "Test Cinephile"
         );
         break;

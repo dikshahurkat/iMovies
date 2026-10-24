@@ -74,7 +74,7 @@ exports.registerUser = async (req, res) => {
     });
 
     // Send verification email via Brevo with BOTH OTP and verification link
-    const clientUrl = emailConfig.clientUrl || "http://localhost:5173";
+    const clientUrl = emailConfig.getClientUrl(req);
     const verificationLink = `${clientUrl}/verify-email?token=${verificationToken}`;
 
     const emailResult = await sendVerificationEmail(newUser.email, verificationLink, newUser.username, verificationOtp);
@@ -320,7 +320,7 @@ exports.resendVerification = async (req, res) => {
     user.verificationOtpExpires = new Date(Date.now() + 15 * 60 * 1000);
     await user.save();
 
-    const clientUrl = emailConfig.clientUrl || "http://localhost:5173";
+    const clientUrl = emailConfig.getClientUrl(req);
     const verificationLink = `${clientUrl}/verify-email?token=${verificationToken}`;
 
     const emailResult = await sendVerificationEmail(user.email, verificationLink, user.username, verificationOtp);
@@ -362,7 +362,7 @@ exports.forgotPassword = async (req, res) => {
       user.resetPasswordExpires = new Date(Date.now() + 60 * 60 * 1000); // 1-hour expiry
       await user.save();
 
-      const clientUrl = emailConfig.clientUrl || "http://localhost:5173";
+      const clientUrl = emailConfig.getClientUrl(req);
       const resetLink = `${clientUrl}/reset-password?token=${resetToken}`;
 
       sendPasswordResetEmail(user.email, resetLink, user.username).catch((err) => {

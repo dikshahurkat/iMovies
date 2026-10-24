@@ -22,8 +22,9 @@ async function runEmailTests() {
   console.log("========================================================");
   console.log(`[Config] API Key present: ${Boolean(emailConfig.apiKey)}`);
   console.log(`[Config] Sender Email:   ${emailConfig.senderEmail}`);
+  const clientUrl = emailConfig.getClientUrl();
   console.log(`[Config] Sender Name:    ${emailConfig.senderName}`);
-  console.log(`[Config] Client URL:     ${emailConfig.clientUrl}`);
+  console.log(`[Config] Client URL:     ${clientUrl}`);
   console.log("========================================================\n");
 
   const targetEmail = process.argv[2] || emailConfig.senderEmail;
@@ -33,7 +34,7 @@ async function runEmailTests() {
     console.log(`\n--- [TEST 1/4] Testing sendVerificationEmail() ---`);
     const verifyRes = await sendVerificationEmail(
       targetEmail,
-      `${emailConfig.clientUrl}/verify-email?token=test_token_verification_12345`,
+      `${clientUrl}/verify-email?token=test_token_verification_12345`,
       "Cinema Fanatic"
     );
     console.log("Test 1 Result:", verifyRes);
@@ -42,7 +43,7 @@ async function runEmailTests() {
     console.log(`\n--- [TEST 2/4] Testing sendPasswordResetEmail() ---`);
     const resetRes = await sendPasswordResetEmail(
       targetEmail,
-      `${emailConfig.clientUrl}/reset-password?token=test_token_reset_67890`,
+      `${clientUrl}/reset-password?token=test_token_reset_67890`,
       "Cinema Fanatic"
     );
     console.log("Test 2 Result:", resetRes);
