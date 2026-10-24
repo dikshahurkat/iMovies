@@ -196,9 +196,15 @@ const sendTemplateEmail = async ({ to, name, templateId, params }) => {
  * @param {string} [otp]
  */
 const sendVerificationEmail = async (email, verificationLink, username = "Movie Fan", otp = null) => {
+  const cleanUsername = username && username.trim() ? username.trim() : "Movie Fan";
   const subject = otp
-    ? `🎬 ${otp} is your iMovies verification code`
-    : "🎬 Activate your iMovies Account - Verify Email";
+    ? `Your iMovies Verification Code: ${otp}`
+    : "Verify Your iMovies Account";
+
+  // Plain-text alternative for high deliverability & anti-spam compliance
+  const textContent = otp
+    ? `Hi ${cleanUsername},\n\nYour 6-digit One-Time Password (OTP) to verify your iMovies account is: ${otp}\n\nThis code is valid for 15 minutes.\n\nAlternatively, you can activate your account directly using this link:\n${verificationLink}\n\nIf you did not sign up for iMovies, please ignore this email.`
+    : `Hi ${cleanUsername},\n\nPlease verify your iMovies account by clicking the link below:\n${verificationLink}\n\nIf you did not sign up for iMovies, please ignore this email.`;
   
   // High-visibility console log for local testing
   console.log(`\n======================================================`);
@@ -318,9 +324,10 @@ const sendVerificationEmail = async (email, verificationLink, username = "Movie 
 
   return sendEmail({
     to: email,
-    name: username,
+    name: cleanUsername,
     subject,
     htmlContent,
+    textContent,
     tags: ["account-verification"],
   });
 };

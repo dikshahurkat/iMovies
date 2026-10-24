@@ -11,11 +11,13 @@ const Review = require("../models/reviewModel");
 
 const MONGO_URI = process.env.MONGO_URI || "mongodb://127.0.0.1:27017/imovies";
 
-const seedDatabase = async () => {
+const seedDatabase = async (shouldExit = true) => {
   try {
-    console.log("[Seed] Connecting to MongoDB at:", MONGO_URI);
-    await mongoose.connect(MONGO_URI);
-    console.log("[Seed] Connected successfully!");
+    if (mongoose.connection.readyState !== 1) {
+      console.log("[Seed] Connecting to MongoDB at:", MONGO_URI);
+      await mongoose.connect(MONGO_URI);
+      console.log("[Seed] Connected successfully!");
+    }
 
     // Clean existing data
     await Promise.all([
@@ -355,11 +357,70 @@ const seedDatabase = async () => {
     console.log(`[Seed] Inserted sample reviews.`);
 
     console.log("[Seed] Database seeding completed successfully!");
-    process.exit(0);
+    if (shouldExit) {
+      process.exit(0);
+    }
   } catch (error) {
     console.error("[Seed] Error during seeding:", error);
-    process.exit(1);
+    if (shouldExit) {
+      process.exit(1);
+    }
+    throw error;
   }
 };
 
-seedDatabase();
+/**
+ * Ensures essential default admin, users, and catalog data exist in the connected MongoDB.
+ * Useful for automated setup when connected to MongoDB Atlas.
+ */
+const autoSeedIfEmpty = async () => {
+  try {
+    const admin = await Admin.findOne({ email: "admin@imovies.com" });
+    if (!admin) {
+      console.log("[Bootstrap] 🛡️  Default admin not found in database. Initializing admin account...");
+      const salt = await bcrypt.genSalt(10);
+      const adminPassword = await bcrypt.hash("admin123", salt);
+      await Admin.create({
+        username: "admin",
+        email: "admin@imovies.com",
+        password: adminPassword,
+        role: "admin",
+      });
+      console.log("[Bootstrap] ✅ Default admin (admin@imovies.com / admin123) successfully initialized in database.");
+    } else {
+      console.log("[Bootstrap] ✅ Admin account verified in database (admin@imovies.com).");
+    }
+
+    const demoUser = await User.findOne({ email: "demo@imovies.com" });
+    if (!demoUser) {
+      console.log("[Bootstrap] 👤 Initializing default demo user...");
+      const salt = await bcrypt.genSalt(10);
+      const userPassword = await bcrypt.hash("user123", salt);
+      await User.create({
+        username: "moviefan",
+        email: "demo@imovies.com",
+        password: userPassword,
+        role: "user",
+        isVerified: true,
+      });
+      console.log("[Bootstrap] ✅ Default demo user (demo@imovies.com / user123) initialized in database.");
+    }
+
+    const theatreCount = await Theatre.countDocuments();
+    if (theatreCount === 0) {
+      console.log("[Bootstrap] 🏛️  No theatres found in database. Running initial catalog seeding...");
+      await seedDatabase(false);
+    }
+  } catch (err) {
+    console.error("[Bootstrap] Auto-seed check error:", err.message);
+  }
+};
+
+if (require.main === module) {
+  seedDatabase(true);
+}
+
+module.exports = {
+  seedDatabase,
+  autoSeedIfEmpty,
+};

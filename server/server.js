@@ -28,6 +28,7 @@ const emailRoutes = require("./routes/emailRoutes");
 const { initCleanupCron } = require("./utils/cleanupService");
 const { initReminderCron } = require("./utils/reminderService");
 const { syncTMDBMovies, quickSync } = require("./services/tmdbService");
+const { autoSeedIfEmpty } = require("./utils/seedData");
 
 const app = express();
 const server = http.createServer(app);
@@ -152,10 +153,13 @@ const MONGO_URI = process.env.MONGO_URI || "mongodb://127.0.0.1:27017/imovies";
 
 mongoose
   .connect(MONGO_URI)
-  .then(() => {
+  .then(async () => {
     console.log("=========================================");
     console.log(`✅ Connected to MongoDB: ${MONGO_URI}`);
     console.log("=========================================");
+
+    // Ensure Admin account, demo user, and initial catalog exist in database
+    await autoSeedIfEmpty();
 
     // Initialize seat TTL cleanup + email reminder cron jobs
     initCleanupCron(io);
