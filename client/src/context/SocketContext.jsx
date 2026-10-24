@@ -7,8 +7,14 @@ export const SocketProvider = ({ children }) => {
   const [socket, setSocket] = useState(null);
 
   useEffect(() => {
-    // Connect to server (proxied by Vite or direct to port 5000)
-    const newSocket = io("/", {
+    // Connect to server (in production, targets VITE_SOCKET_URL, backend host from VITE_API_URL, or defaults to "/")
+    const socketUrl =
+      import.meta.env.VITE_SOCKET_URL ||
+      (import.meta.env.VITE_API_URL
+        ? import.meta.env.VITE_API_URL.replace(/\/api\/?$/, "")
+        : "/");
+
+    const newSocket = io(socketUrl, {
       transports: ["websocket", "polling"],
       reconnectionAttempts: 5,
     });

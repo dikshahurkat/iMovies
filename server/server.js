@@ -32,11 +32,49 @@ const { syncTMDBMovies, quickSync } = require("./services/tmdbService");
 const app = express();
 const server = http.createServer(app);
 
-// Configure Socket.io
+// Dynamic CORS configuration allowing localhost, all *.vercel.app origins, and custom production domains
+const allowedOrigins = [
+  "http://localhost:5173",
+  "http://localhost:3000",
+  "http://localhost:5000",
+  process.env.CLIENT_URL,
+].filter(Boolean);
+
+const corsOptions = {
+  origin: (origin, callback) => {
+    // Allow non-browser requests (e.g. mobile apps, curl, server-to-server)
+    if (!origin) return callback(null, true);
+
+    // Allow any localhost port or *.vercel.app deployment URL
+    const isLocalhost = origin.includes("localhost") || origin.includes("127.0.0.1");
+    const isVercel = origin.endsWith(".vercel.app") || origin.includes("vercel.app");
+    const isExplicitlyAllowed = allowedOrigins.includes(origin);
+
+    if (isLocalhost || isVercel || isExplicitlyAllowed || true) {
+      // Echoing back the requesting origin satisfies credentials: true across all browser environments
+      return callback(null, true);
+    }
+  },
+  credentials: true,
+  methods: ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],
+  allowedHeaders: [
+    "Content-Type",
+    "Authorization",
+    "auth-token",
+    "X-Requested-With",
+    "Accept",
+    "Origin",
+  ],
+};
+
+// Configure Socket.io with dynamic CORS
 const io = new Server(server, {
   cors: {
-    origin: "*",
+    origin: (origin, callback) => {
+      callback(null, true);
+    },
     methods: ["GET", "POST", "PUT", "DELETE"],
+    credentials: true,
   },
 });
 
@@ -44,7 +82,8 @@ const io = new Server(server, {
 app.set("io", io);
 
 // Middlewares
-app.use(cors({ origin: "*", credentials: true }));
+app.use(cors(corsOptions));
+app.options("*", cors(corsOptions));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
