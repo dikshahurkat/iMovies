@@ -1,0 +1,112 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  body {
+    background-color: #00050d;
+    color: #f1f5f9;
+    font-feature-settings: "cv02", "cv03", "cv04", "cv11";
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    letter-spacing: -0.02em;
+  }
+}
+
+/* Custom Prime Video Scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+::-webkit-scrollbar-track {
+  background: #00050d;
+}
+::-webkit-scrollbar-thumb {
+  background: #1a2436;
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #00a8e1;
+}
+
+/* Cinema Curved Screen at the TOP (if used) */
+.cinema-screen {
+  height: 12px;
+  width: 75%;
+  margin: 0 auto 30px auto;
+  border-top: 4px solid #00a8e1;
+  border-radius: 50% 50% 0 0 / 100% 100% 0 0;
+  box-shadow: 0 10px 30px -4px rgba(0, 168, 225, 0.45);
+}
+
+/* Cinema Curved Screen at the BOTTOM (Correct auditorium orientation facing audience) */
+.cinema-screen-bottom {
+  height: 14px;
+  width: 78%;
+  margin: 36px auto 14px auto;
+  border-bottom: 4px solid #00a8e1;
+  border-radius: 0 0 50% 50% / 0 0 100% 100%;
+  box-shadow: 0 -12px 35px -3px rgba(0, 168, 225, 0.5);
+  position: relative;
+}
+
+.cinema-screen-bottom::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 10%;
+  right: 10%;
+  height: 18px;
+  background: radial-gradient(ellipse at bottom, rgba(0, 168, 225, 0.35) 0%, transparent 70%);
+  pointer-events: none;
+}
+
+/* Seat styling */
+.seat {
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.seat:hover:not(:disabled) {
+  transform: scale(1.15);
+}
+
+/* Ticket perforation effect */
+.ticket-edge-left {
+  position: relative;
+}
+.ticket-edge-left::before {
+  content: '';
+  position: absolute;
+  left: -12px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background-color: #00050d;
+}
+
+.ticket-edge-right {
+  position: relative;
+}
+.ticket-edge-right::after {
+  content: '';
+  position: absolute;
+  right: -12px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background-color: #00050d;
+}
+
+/* Amazon Prime glow and badges */
+.prime-badge {
+  background: linear-gradient(135deg, #00a8e1 0%, #0073a8 100%);
+  color: #00050d;
+  font-weight: 800;
+  letter-spacing: -0.01em;
+}
