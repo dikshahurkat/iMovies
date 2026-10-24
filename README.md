@@ -1,10 +1,10 @@
-# iMovies - Movie Ticket Booking Made Simple 🎬🎟️
+# iMovies - Movie Ticket Booking Made Simple
 
 A full-stack, responsive, production-ready Movie Ticket Booking Web Application built with the **MERN** stack (MongoDB, Express.js, React.js, Node.js), featuring real-time WebSocket seat availability, 10-minute TTL temporary seat locking, printable QR digital passes, and automated cron utilities.
 
 ---
 
-## 🌟 Key Architecture & Features
+## Key Architecture & Features
 
 ### 1. Frontend (React 18 + Vite)
 - **Code Splitting & Lazy Loading**: All pages are code-split using `React.lazy` and `Suspense` for blazing fast initial loads.
@@ -42,7 +42,7 @@ A full-stack, responsive, production-ready Movie Ticket Booking Web Application 
 
 ---
 
-## 📁 Project Directory Layout
+## Project Directory Layout
 
 ```
 iMovies/
@@ -68,18 +68,17 @@ iMovies/
 
 ---
 
-## 🔑 Default Credentials (Pre-Seeded)
+## Default Credentials (Pre-Seeded)
 
 | Role | Email | Password | Access Level |
 |---|---|---|---|
-| **Movie Fan (User)** | `demo@imovies.com` | `user123` | Browsing, Booking, Watchlist, Reviews, Tickets |
-| **Administrator** | `admin@imovies.com` | `admin123` | Full Dashboard, Analytics, Movie/Theatre/Show CRUD, Moderation |
+| **Movie Fan (User)** | `example.com` | `example` | Browsing, Booking, Watchlist, Reviews, Tickets |
+| **Administrator** | `example.com` | `example` | Full Dashboard, Analytics, Movie/Theatre/Show CRUD, Moderation |
 
-*(You can also use the **"Instant Demo Access"** buttons on the login page to fill credentials in 1 click!)*
 
 ---
 
-## 🚀 How to Run Locally
+## How to Run Locally
 
 ### 1. Start MongoDB
 Ensure MongoDB is running locally on `mongodb://127.0.0.1:27017` or update `server/.env` with your MongoDB connection string.
@@ -101,7 +100,7 @@ npm run dev      # Runs on http://localhost:5173
 
 ---
 
-## 📡 Key REST API Endpoints
+## Key REST API Endpoints
 
 - **Auth**: `POST /api/auth/register`, `POST /api/auth/login`, `POST /api/auth/admin/login`, `GET /api/auth/me`, `GET /api/auth/admin/stats`
 - **Movies**: `GET /api/movie`, `GET /api/movie/:movieId`, `POST /api/movie`, `PUT /api/movie/:movieId`, `DELETE /api/movie/:movieId`
